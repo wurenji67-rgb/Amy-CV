@@ -1,0 +1,1072 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>吴嘉铌 | 内容营销个人简历</title>
+  <style>
+    :root {
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --text-primary: #1e293b;
+      --text-secondary: #64748b;
+      --accent-blue: #3b82f6;
+      --accent-orange: #f97316;
+      --border-color: #e2e8f0;
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+      --shadow-md: 0 8px 24px rgba(0,0,0,0.08);
+      --radius: 16px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --font-main: system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+      --sidebar-width: 240px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { font-size: 16px; scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-main);
+      background-color: var(--bg-color);
+      color: var(--text-primary);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* 编辑模式样式 */
+    .edit-mode .editable {
+      border: 2px dashed var(--accent-blue);
+      padding: 4px 8px;
+      border-radius: 6px;
+      background: rgba(59, 130, 246, 0.05);
+      min-height: 1.6em;
+    }
+    .edit-mode .editable:focus {
+      outline: none;
+      border-color: var(--accent-orange);
+      background: rgba(249, 115, 22, 0.05);
+    }
+    .edit-mode .editable:empty::before {
+      content: attr(data-placeholder);
+      color: var(--text-secondary);
+      font-style: italic;
+    }
+
+    /* 编辑工具栏 */
+    .edit-toolbar {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 200;
+      display: flex;
+      gap: 12px;
+    }
+    .edit-btn {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      box-shadow: var(--shadow-md);
+      transition: var(--transition);
+    }
+    .edit-btn:hover { transform: scale(1.1); }
+    .edit-btn.save { background: var(--accent-blue); color: white; }
+    .edit-btn.edit { background: var(--accent-orange); color: white; }
+
+    /* 作品链接区域 */
+    .work-links {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px dashed var(--border-color);
+    }
+    .work-links-title {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-bottom: 10px;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 4px 0;
+    }
+    .work-links-title:hover { color: var(--accent-blue); }
+    .link-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+      padding: 8px 12px;
+      background: #f8fafc;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      transition: var(--transition);
+    }
+    .link-item:hover { border-color: var(--accent-blue); }
+    .link-icon { font-size: 1.2rem; }
+    .link-text { flex: 1; font-size: 0.9rem; color: var(--accent-blue); text-decoration: none; }
+    .link-text:hover { text-decoration: underline; }
+    .link-delete {
+      cursor: pointer;
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      transition: var(--transition);
+    }
+    .link-delete:hover { background: #fee2e2; color: #ef4444; }
+
+    .add-link-form {
+      display: none;
+      margin-top: 12px;
+      padding: 12px;
+      background: #f0f9ff;
+      border-radius: 8px;
+      border: 1px solid #bae6fd;
+    }
+    .add-link-form.show { display: block; }
+    .add-link-form input, .add-link-form select {
+      width: 100%;
+      padding: 8px 12px;
+      margin-bottom: 8px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 0.9rem;
+    }
+    .add-link-form button {
+      padding: 8px 16px;
+      background: var(--accent-blue);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    .add-link-form button:hover { background: #2563eb; }
+
+    /* 图片预览模态框 */
+    .image-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.85);
+      z-index: 1000;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 40px 20px;
+      overflow-y: auto;
+    }
+    .image-modal.show { display: flex; }
+    .image-modal-content {
+      max-width: 800px;
+      width: 100%;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+    }
+    .image-modal-content img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .image-modal-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 36px;
+      height: 36px;
+      background: rgba(0,0,0,0.6);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* 头像上传区域 */
+    .avatar-upload {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 36px;
+      height: 36px;
+      background: var(--accent-orange);
+      border-radius: 50%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: white;
+      font-size: 1rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .edit-mode .avatar-upload { display: flex; }
+    .avatar-upload input { display: none; }
+
+    /* 左侧边栏导航 */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: var(--sidebar-width);
+      height: 100vh;
+      background: var(--card-bg);
+      border-right: 1px solid var(--border-color);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      padding: 24px 0;
+      box-shadow: var(--shadow-sm);
+    }
+    .sidebar-logo {
+      padding: 0 24px;
+      margin-bottom: 32px;
+      font-weight: 700;
+      font-size: 1.4rem;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+    }
+    .sidebar-logo span { color: var(--accent-orange); }
+    .sidebar-nav {
+      list-style: none;
+      flex: 1;
+      padding: 0 12px;
+    }
+    .sidebar-item {
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      padding: 12px 16px;
+      margin-bottom: 4px;
+      border-radius: 10px;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .sidebar-item:hover {
+      background: #f1f5f9;
+      color: var(--accent-blue);
+    }
+    .sidebar-item.active {
+      background: linear-gradient(135deg, #eff6ff 0%, #f0f9ff 100%);
+      color: var(--accent-blue);
+      font-weight: 600;
+    }
+    .sidebar-item::before {
+      content: '';
+      width: 4px;
+      height: 20px;
+      border-radius: 2px;
+      background: transparent;
+      transition: var(--transition);
+    }
+    .sidebar-item.active::before {
+      background: var(--accent-blue);
+    }
+    .sidebar-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border-color);
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      text-align: center;
+    }
+
+    /* 移动端菜单按钮 */
+    .menu-toggle {
+      display: none;
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      z-index: 150;
+      width: 44px;
+      height: 44px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      cursor: pointer;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      box-shadow: var(--shadow-sm);
+    }
+    .menu-toggle span {
+      display: block;
+      width: 20px;
+      height: 2px;
+      background: var(--text-primary);
+      transition: var(--transition);
+    }
+
+    /* 主内容区 */
+    main {
+      margin-left: var(--sidebar-width);
+      min-height: 100vh;
+      padding: 40px;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .page-section {
+      display: none;
+      opacity: 0;
+      transform: translateY(15px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+    .page-section.active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* 首页高级设计样式 */
+    .hero { 
+      position: relative;
+      text-align: center; 
+      padding: 60px 0 50px; 
+      overflow: hidden;
+    }
+    .hero-bg-decoration {
+      position: absolute;
+      top: -15%;
+      right: -15%;
+      width: 70%;
+      height: 130%;
+      background: radial-gradient(circle at 30% 40%, rgba(59, 130, 246, 0.06) 0%, transparent 60%),
+                  radial-gradient(circle at 80% 80%, rgba(249, 115, 22, 0.04) 0%, transparent 50%);
+      z-index: 0;
+      pointer-events: none;
+    }
+    .hero-bg-decoration::before {
+      content: 'CREATIVE';
+      position: absolute;
+      top: 45%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-12deg);
+      font-size: clamp(4rem, 12vw, 10rem);
+      font-weight: 900;
+      color: rgba(0, 0, 0, 0.025);
+      letter-spacing: 0.15em;
+      white-space: nowrap;
+      pointer-events: none;
+      user-select: none;
+    }
+    .hero > * { position: relative; z-index: 1; }
+    
+    .avatar-wrapper {
+      width: 150px; height: 150px; margin: 0 auto 28px;
+      border-radius: 50%; background: linear-gradient(135deg, #e0e7ff 0%, #bae6fd 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3.2rem; font-weight: 600; color: var(--accent-blue);
+      box-shadow: var(--shadow-md); position: relative; overflow: hidden;
+      border: 5px solid #fff;
+    }
+    .avatar-wrapper img {
+      width: 100%; height: 100%; object-fit: cover; display: none;
+      position: absolute; top: 0; left: 0;
+    }
+    .hero h1 { font-size: 2.8rem; font-weight: 800; margin-bottom: 10px; letter-spacing: -0.03em; }
+    .hero .tag { font-size: 1rem; color: var(--accent-blue); font-weight: 500; margin-bottom: 24px; }
+    .hero .info-grid {
+      display: flex; justify-content: center; gap: 28px; flex-wrap: wrap;
+      margin-bottom: 36px; color: var(--text-secondary); font-size: 0.95rem;
+    }
+    .hero .info-item { display: flex; align-items: center; gap: 6px; }
+    
+    .hero-summary {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 28px 36px;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-color);
+      border-left: 5px solid var(--accent-orange);
+      border-radius: 14px;
+      font-size: 1.2rem;
+      line-height: 1.7;
+      color: var(--text-primary);
+      font-weight: 500;
+      box-shadow: var(--shadow-sm);
+      text-align: left;
+      position: relative;
+    }
+    .hero-summary::after {
+      content: '';
+      position: absolute;
+      bottom: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 4px;
+      background: var(--accent-blue);
+      border-radius: 2px;
+      opacity: 0.6;
+    }
+
+    .section-title {
+      font-size: 1.8rem; font-weight: 700; margin-bottom: 32px;
+      position: relative; padding-left: 16px;
+    }
+    .section-title::before {
+      content: ''; position: absolute; left: 0; top: 6px; bottom: 6px; width: 4px;
+      background: var(--accent-orange); border-radius: 2px;
+    }
+    .card {
+      background: var(--card-bg); border-radius: var(--radius); padding: 28px;
+      margin-bottom: 20px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);
+      transition: var(--transition); position: relative;
+    }
+    .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: var(--accent-blue); }
+    .card-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
+    .card-title { font-size: 1.2rem; font-weight: 600; }
+    .card-date { font-size: 0.85rem; color: var(--accent-orange); background: #fff7ed; padding: 2px 8px; border-radius: 6px; font-weight: 500; }
+    .card-sub { color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 16px; }
+    .card-list { list-style: none; padding-left: 0; }
+    .card-list li { position: relative; padding-left: 20px; margin-bottom: 8px; color: var(--text-primary); font-size: 0.95rem; line-height: 1.7; }
+    .card-list li::before {
+      content: '•'; position: absolute; left: 0; color: var(--accent-blue); font-weight: bold;
+    }
+    .highlight { color: var(--accent-orange); font-weight: 600; }
+
+    .skill-category { margin-bottom: 24px; }
+    .skill-cat-title { font-weight: 600; margin-bottom: 10px; color: var(--text-primary); display: flex; align-items: center; gap: 8px; }
+    .skill-cat-title::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--accent-blue); }
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 10px; }
+    .skill-tag {
+      background: #f1f5f9; padding: 8px 16px; border-radius: 20px; font-size: 0.9rem;
+      color: var(--text-primary); border: 1px solid transparent; transition: var(--transition); cursor: default;
+    }
+    .skill-tag:hover { background: #e0f2fe; color: var(--accent-blue); border-color: var(--accent-blue); transform: scale(1.03); }
+
+    .honor-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+    .honor-card {
+      background: linear-gradient(135deg, #fff 0%, #f8fafc 100%);
+      border: 1px solid var(--border-color); border-radius: var(--radius); padding: 24px;
+      text-align: center; transition: var(--transition);
+    }
+    .honor-card:hover { border-color: var(--accent-orange); box-shadow: var(--shadow-md); }
+    .honor-icon { font-size: 2rem; margin-bottom: 12px; display: block; }
+    .honor-title { font-weight: 600; margin-bottom: 6px; color: var(--text-primary); }
+    .honor-desc { font-size: 0.9rem; color: var(--text-secondary); }
+
+    /* 实习经历特殊样式 */
+    .internship-card { border-left: 4px solid var(--accent-blue); }
+    .project-card { border-left: 4px solid var(--accent-orange); }
+
+    /* 响应式适配 */
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        width: 260px;
+      }
+      .sidebar.open { transform: translateX(0); }
+      .menu-toggle { display: flex; }
+      main { margin-left: 0; padding: 20px; padding-top: 70px; }
+      .hero h1 { font-size: 2.2rem; }
+      .info-grid { flex-direction: column; align-items: center; gap: 8px; }
+      .card-header { flex-direction: column; }
+      .edit-toolbar { bottom: 16px; right: 16px; }
+      .edit-btn { width: 48px; height: 48px; font-size: 1.2rem; }
+      .section-title { font-size: 1.5rem; }
+      .hero-summary { padding: 20px; font-size: 1.05rem; }
+      .hero-bg-decoration::before { font-size: 16vw; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 移动端菜单按钮 -->
+  <div class="menu-toggle" id="menuToggle" aria-label="菜单切换">
+    <span></span><span></span><span></span>
+  </div>
+
+  <!-- 左侧边栏导航 -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-logo">吴嘉<span>.</span></div>
+    <ul class="sidebar-nav" id="sidebarNav">
+      <li class="sidebar-item active" data-target="home">🏠 首页简介</li>
+      <li class="sidebar-item" data-target="internship">💼 实习经历</li>
+      <li class="sidebar-item" data-target="projects">🚀 项目经历</li>
+      <li class="sidebar-item" data-target="education">🎓 教育背景</li>
+      <li class="sidebar-item" data-target="skills">⚡ 技能特长</li>
+      <li class="sidebar-item" data-target="honors">🏆 证书荣誉</li>
+    </ul>
+    <div class="sidebar-footer">© 2025 吴嘉</div>
+  </nav>
+
+  <main>
+    <div class="container">
+      <!-- 首页/个人简介 -->
+      <section id="home" class="page-section active">
+        <div class="hero">
+          <div class="hero-bg-decoration"></div>
+          <div class="avatar-wrapper">
+            <div id="avatar-placeholder">吴</div>
+            <img id="avatar-img" alt="个人头像">
+            <label class="avatar-upload" title="更换头像">
+              📷
+              <input type="file" id="avatarInput" accept="image/*">
+            </label>
+          </div>
+          <h1 class="editable" data-placeholder="姓名">吴嘉铌</h1>
+          <p class="tag editable" data-placeholder="求职意向">求职意向：内容营销 | 23 岁 | 中共党员</p>
+          <div class="info-grid">
+            <span class="info-item editable" data-placeholder="电话"> 198-4248-6144</span>
+            <span class="info-item editable" data-placeholder="邮箱">✉️ 1050194961@qq.com</span>
+            <span class="info-item editable" data-placeholder="地址">📍 深圳大学</span>
+          </div>
+          <div class="hero-summary editable" data-placeholder="个人总结">
+            内容营销全能选手｜公关传播 + 品牌策划 + 新媒体运营，会写稿、能做方案、懂数据，创意与落地双在线✨
+          </div>
+        </div>
+      </section>
+
+      <!-- 实习经历 -->
+      <section id="internship" class="page-section">
+        <h2 class="section-title">实习经历</h2>
+        
+        <div class="card internship-card" data-project="hezhichuanxin">
+          <div class="card-header">
+            <div>
+              <div class="card-title editable" data-placeholder="公司名称">和智传信品牌管理顾问有限责任公司</div>
+              <div class="card-sub editable" data-placeholder="职位">公关实习生</div>
+            </div>
+            <span class="card-date editable" data-placeholder="时间">2024.10 - 2025.03</span>
+          </div>
+          <ul class="card-list">
+            <li class="editable" data-placeholder="工作内容"><strong>客户对接与项目推进：</strong>负责与墨迹天气、百度、顺丰同城及顺丰旗下新品牌"丰云配"等知名企业客户对接，理解传播目标与需求，确保项目按计划推进。</li>
+            <li class="editable" data-placeholder="工作内容"><strong>内容创作与媒体发布：</strong>独立撰写新闻稿（每月 4 篇），覆盖搜狐、极客网等平台，<span class="highlight">单篇稿件曝光达百万级</span>；撰写社媒文案及官网推文，扩大品牌影响力。</li>
+            <li class="editable" data-placeholder="工作内容"><strong>传播执行与营销物料落地：</strong>协助落实 KV、IP 形象设计及周边营销工具包内容，确保品牌信息一致性。</li>
+          </ul>
+          <div class="work-links">
+            <div class="work-links-title">📎 作品链接</div>
+            <div class="links-container">
+              <div class="link-item" data-type="link">
+                <span class="link-icon">📝</span>
+                <a href="https://mp.weixin.qq.com/s/LOiPv_gbSiIN8S5TiFDDwg" target="_blank" class="link-text">产出品牌推文</a>
+                <span class="link-delete" title="删除">×</span>
+              </div>
+              <div class="link-item" data-type="link">
+                <span class="link-icon">📰</span>
+                <a href="https://m.jiemian.com/article/12506185.html" target="_blank" class="link-text">产出新闻稿</a>
+                <span class="link-delete" title="删除">×</span>
+              </div>
+              <div class="link-item" data-type="image">
+                <span class="link-icon">🖼️</span>
+                <a href="#" class="link-text" id="sf-product-link">顺丰产品介绍（丰云配）</a>
+                <span class="link-delete" title="删除">×</span>
+              </div>
+            </div>
+            <div class="add-link-form">
+              <select class="link-type">
+                <option value="pdf">📄 方案 PDF</option>
+                <option value="image">️ 现场图片</option>
+                <option value="video">🎬 视频</option>
+                <option value="link">🔗 外部链接</option>
+              </select>
+              <input type="text" class="link-name" placeholder="链接名称">
+              <input type="text" class="link-url" placeholder="链接地址">
+              <button class="confirm-add">确认添加</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card internship-card" data-project="zhuoye">
+          <div class="card-header">
+            <div>
+              <div class="card-title editable" data-placeholder="公司名称">深圳市着野科技有限公司</div>
+              <div class="card-sub editable" data-placeholder="职位">新媒体运营</div>
+            </div>
+            <span class="card-date editable" data-placeholder="时间">2024.06 - 2024.09</span>
+          </div>
+          <ul class="card-list">
+            <li class="editable" data-placeholder="工作内容"><strong>拉新策略：</strong>主导 B 站拉新项目，深入调研 B 站及其竞品，识别并实施搬运外网视频策略，获客成本有效降低，<span class="highlight">单视频最高观看量达 23 万</span>。</li>
+            <li class="editable" data-placeholder="工作内容"><strong>内容优化：</strong>运用用户行为数据分析，持续优化视频内容方向，精准匹配目标受众兴趣，提升用户粘性与互动率。</li>
+            <li class="editable" data-placeholder="工作内容"><strong>转化提升：</strong>针对用户转化流程各环节进行优化，策略调整后<span class="highlight">用户转化率跃升超 20%</span>，为业务增长注入强劲动力。</li>
+          </ul>
+          <div class="work-links">
+            <div class="work-links-title">📎 作品链接（点击添加）</div>
+            <div class="links-container"></div>
+            <div class="add-link-form">
+              <select class="link-type">
+                <option value="pdf">📄 方案 PDF</option>
+                <option value="image">🖼️ 现场图片</option>
+                <option value="video"> 视频</option>
+                <option value="link">🔗 外部链接</option>
+              </select>
+              <input type="text" class="link-name" placeholder="链接名称">
+              <input type="text" class="link-url" placeholder="链接地址">
+              <button class="confirm-add">确认添加</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card internship-card" data-project="pinjian">
+          <div class="card-header">
+            <div>
+              <div class="card-title editable" data-placeholder="公司名称">深圳品鉴财经有限公司</div>
+              <div class="card-sub editable" data-placeholder="职位">财经编辑</div>
+            </div>
+            <span class="card-date editable" data-placeholder="时间">2024.02 - 2024.05</span>
+          </div>
+          <ul class="card-list">
+            <li class="editable" data-placeholder="工作内容"><strong>内容创作：</strong>负责财经领域内容创作，运用专业数据分析工具追踪市场趋势和受众偏好，<span class="highlight">产出的内容平均浏览量破万</span>。</li>
+            <li class="editable" data-placeholder="工作内容"><strong>合作策划：</strong>参与策划并执行与多家知名金融机构（众安银行、博时基金、微众银行等）的合作项目，协助制定合作内容策略与执行框架。</li>
+            <li class="editable" data-placeholder="工作内容"><strong>行业调研与资源建设：</strong>独立完成财经传播调研报告，主导 KOL 资源网络建设，<span class="highlight">月均维护 50+ 核心合作节点</span>。</li>
+          </ul>
+          <div class="work-links">
+            <div class="work-links-title">📎 作品链接（点击添加）</div>
+            <div class="links-container"></div>
+            <div class="add-link-form">
+              <select class="link-type">
+                <option value="pdf">📄 方案 PDF</option>
+                <option value="image">🖼️ 现场图片</option>
+                <option value="video">🎬 视频</option>
+                <option value="link">🔗 外部链接</option>
+              </select>
+              <input type="text" class="link-name" placeholder="链接名称">
+              <input type="text" class="link-url" placeholder="链接地址">
+              <button class="confirm-add">确认添加</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 项目经历 -->
+      <section id="projects" class="page-section">
+        <h2 class="section-title">项目经历</h2>
+
+        <div class="card project-card" data-project="aqara">
+          <div class="card-header">
+            <div>
+              <div class="card-title editable" data-placeholder="项目名称">《Aqara 全屋智能品牌营销推广方案》</div>
+              <div class="card-sub editable" data-placeholder="角色">创意 & 策划 | 毕业设计</div>
+            </div>
+            <span class="card-date editable" data-placeholder="时间">2024.10 - 2025.06</span>
+          </div>
+          <ul class="card-list">
+            <li class="editable" data-placeholder="项目描述">面向校内师生及广告行业评委展示方案，获得<span class="highlight">毕业设计一等奖</span>。</li>
+            <li class="editable" data-placeholder="项目描述">提炼 Aqara 从"技术展示"转向"家庭场景主动智能体验"的传播策略，策划核心主张"+你所想，智有一套"。</li>
+            <li class="editable" data-placeholder="项目描述">搭建"认知破冰—理解深化—销售转化"三阶段整合传播链路，设计 TVC、商圈沉浸式体验、跨界联名、场景直播等触点。</li>
+          </ul>
+          <div class="work-links">
+            <div class="work-links-title">📎 作品链接（方案 PDF + 现场图片 + 视频）</div>
+            <div class="links-container">
+              <div class="link-item" data-type="pdf">
+                <span class="link-icon">📄</span>
+                <a href="https://pan.baidu.com/s/1ifl71Ymie0l7H6ZM5rl4Pg?pwd=9xwr" target="_blank" class="link-text">Aqara 方案完整 PDF</a>
+                <span class="link-delete" title="删除">×</span>
+              </div>
+              <div class="link-item" data-type="video">
+                <span class="link-icon"></span>
+                <a href="https://pan.baidu.com/s/1ifl71Ymie0l7H6ZM5rl4Pg?pwd=9xwr" target="_blank" class="link-text">TVC 视频</a>
+                <span class="link-delete" title="删除">×</span>
+              </div>
+              <div class="link-item" data-type="image">
+                <span class="link-icon">🖼️</span>
+                <a href="#" class="link-text editable" data-placeholder="现场图片链接">现场提案图片集</a>
+                <span class="link-delete" title="删除">×</span>
+              </div>
+            </div>
+            <div class="add-link-form">
+              <select class="link-type">
+                <option value="pdf">📄 方案 PDF</option>
+                <option value="image">🖼️ 现场图片</option>
+                <option value="video">🎬 视频</option>
+                <option value="link"> 外部链接</option>
+              </select>
+              <input type="text" class="link-name" placeholder="链接名称">
+              <input type="text" class="link-url" placeholder="链接地址">
+              <button class="confirm-add">确认添加</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card project-card" data-project="hbn">
+          <div class="card-header">
+            <div>
+              <div class="card-title editable" data-placeholder="项目名称">《"可逆"方程式——HBN 营销策划案》</div>
+              <div class="card-sub editable" data-placeholder="角色">创意 & 策划</div>
+            </div>
+            <span class="card-date editable" data-placeholder="时间">2023.03 - 2023.06</span>
+          </div>
+          <ul class="card-list">
+            <li class="editable" data-placeholder="项目描述">完成 200+ 份用户调研与竞品分析，识别消费者对成分功效、抗初老焦虑和品牌信任感的核心关注。</li>
+            <li class="editable" data-placeholder="项目描述">策划"可逆方程式"传播主题，将产品功效利益点转化为更具记忆点和社交传播感的品牌表达。</li>
+            <li class="editable" data-placeholder="项目成绩"><span class="highlight">荣获广东省一等奖、国家级三等奖</span>。</li>
+          </ul>
+          <div class="work-links">
+            <div class="work-links-title">📎 作品链接</div>
+            <div class="links-container">
+              <div class="link-item" data-type="pdf">
+                <span class="link-icon"></span>
+                <a href="https://pan.baidu.com/s/1MFK0rutKX0zC0UxZ_QtHnA?pwd=4svi" target="_blank" class="link-text">HBN 营销策划案完整方案</a>
+                <span class="link-delete" title="删除">×</span>
+              </div>
+            </div>
+            <div class="add-link-form">
+              <select class="link-type">
+                <option value="pdf">📄 方案 PDF</option>
+                <option value="image">🖼️ 现场图片</option>
+                <option value="video">🎬 视频</option>
+                <option value="link"> 外部链接</option>
+              </select>
+              <input type="text" class="link-name" placeholder="链接名称">
+              <input type="text" class="link-url" placeholder="链接地址">
+              <button class="confirm-add">确认添加</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card project-card" data-project="research">
+          <div class="card-header">
+            <div>
+              <div class="card-title editable" data-placeholder="项目名称">社交媒体背书线索与信息框架对健康信息说服力的影响研究</div>
+              <div class="card-sub editable" data-placeholder="角色">研究人员</div>
+            </div>
+            <span class="card-date editable" data-placeholder="时间">2025.12 - 2026.03</span>
+          </div>
+          <ul class="card-list">
+            <li class="editable" data-placeholder="工作内容">完成实验设计、656 份样本数据采集、统计分析及全英文论文撰写。</li>
+            <li class="editable" data-placeholder="工作内容">探究信息框架、时间距离、社交背书三重变量对健康传播效果的影响。</li>
+            <li class="editable" data-placeholder="成果">成果通过同行评审，被【數字與文化澳門 2026】第 12 届澳门国际传播周"智媒·傳播·未來"博士生学术论坛正式录用。</li>
+          </ul>
+          <div class="work-links">
+            <div class="work-links-title">📎 作品链接（点击添加）</div>
+            <div class="links-container"></div>
+            <div class="add-link-form">
+              <select class="link-type">
+                <option value="pdf"> 方案 PDF</option>
+                <option value="image">🖼️ 现场图片</option>
+                <option value="video">🎬 视频</option>
+                <option value="link">🔗 外部链接</option>
+              </select>
+              <input type="text" class="link-name" placeholder="链接名称">
+              <input type="text" class="link-url" placeholder="链接地址">
+              <button class="confirm-add">确认添加</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 教育背景 -->
+      <section id="education" class="page-section">
+        <h2 class="section-title">教育背景</h2>
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title editable" data-placeholder="学校名称">深圳大学</div>
+              <div class="card-sub editable" data-placeholder="学历专业">硕士 | 新闻传播学（在读）</div>
+            </div>
+            <span class="card-date editable" data-placeholder="时间">2025.09 - 2028.06</span>
+          </div>
+          <p style="color: var(--text-secondary); margin-bottom: 12px;" class="editable" data-placeholder="研究方向"><strong>研究方向：</strong>广告与传媒经济</p>
+          <p style="color: var(--text-secondary);" class="editable" data-placeholder="主修课程"><strong>主修课程：</strong>计算广告学、计算方法与应用、创意传播</p>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title editable" data-placeholder="学校名称">深圳大学</div>
+              <div class="card-sub editable" data-placeholder="学历专业">本科 | 广告学</div>
+            </div>
+            <span class="card-date editable" data-placeholder="时间">2021.09 - 2025.07</span>
+          </div>
+          <p style="color: var(--text-secondary); margin-bottom: 12px;" class="editable" data-placeholder="GPA"><strong>GPA：</strong><span class="highlight">3.9/4.5</span></p>
+          <p style="color: var(--text-secondary);" class="editable" data-placeholder="主修课程"><strong>主修课程：</strong>广告调查、广告创意、广告写作、广告策划、整合营销、网络营销</p>
+        </div>
+      </section>
+
+      <!-- 技能特长 -->
+      <section id="skills" class="page-section">
+        <h2 class="section-title">技能特长</h2>
+        <div class="card">
+          <div class="skill-category">
+            <div class="skill-cat-title">内容与传播</div>
+            <div class="skill-tags">
+              <span class="skill-tag editable" data-placeholder="技能">新闻稿撰写</span>
+              <span class="skill-tag editable" data-placeholder="技能">社媒文案策划</span>
+              <span class="skill-tag editable" data-placeholder="技能">品牌宣传稿</span>
+              <span class="skill-tag editable" data-placeholder="技能">活动宣传内容</span>
+            </div>
+          </div>
+          <div class="skill-category">
+            <div class="skill-cat-title">项目与策划</div>
+            <div class="skill-tags">
+              <span class="skill-tag editable" data-placeholder="技能">市场调研</span>
+              <span class="skill-tag editable" data-placeholder="技能">竞品分析</span>
+              <span class="skill-tag editable" data-placeholder="技能">用户画像构建</span>
+              <span class="skill-tag editable" data-placeholder="技能">品牌传播策略</span>
+              <span class="skill-tag editable" data-placeholder="技能">活动策划执行</span>
+            </div>
+          </div>
+          <div class="skill-category">
+            <div class="skill-cat-title">数据与优化</div>
+            <div class="skill-tags">
+              <span class="skill-tag editable" data-placeholder="技能">内容数据分析</span>
+              <span class="skill-tag editable" data-placeholder="技能">用户行为分析</span>
+              <span class="skill-tag editable" data-placeholder="技能">转化率优化 (CRO)</span>
+            </div>
+          </div>
+          <div class="skill-category">
+            <div class="skill-cat-title">工具能力</div>
+            <div class="skill-tags">
+              <span class="skill-tag editable" data-placeholder="技能">PPT / Excel / Xmind</span>
+              <span class="skill-tag editable" data-placeholder="技能">剪映</span>
+              <span class="skill-tag editable" data-placeholder="技能">Canva</span>
+              <span class="skill-tag editable" data-placeholder="技能">数据追踪工具</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 证书/荣誉 -->
+      <section id="honors" class="page-section">
+        <h2 class="section-title">证书与荣誉</h2>
+        <div class="honor-grid">
+          <div class="honor-card">
+            <span class="honor-icon"></span>
+            <div class="honor-title editable" data-placeholder="荣誉名称">毕业设计一等奖</div>
+            <div class="honor-desc editable" data-placeholder="荣誉描述">深圳大学传播学院<br>《Aqara 全屋智能品牌营销推广方案》</div>
+          </div>
+          <div class="honor-card">
+            <span class="honor-icon">🥇</span>
+            <div class="honor-title editable" data-placeholder="荣誉名称">广东省一等奖</div>
+            <div class="honor-desc editable" data-placeholder="荣誉描述">《"可逆"方程式——HBN 营销策划案》</div>
+          </div>
+          <div class="honor-card">
+            <span class="honor-icon">🌍</span>
+            <div class="honor-title editable" data-placeholder="荣誉名称">国家级三等奖</div>
+            <div class="honor-desc editable" data-placeholder="荣誉描述">《"可逆"方程式——HBN 营销策划案》</div>
+          </div>
+          <div class="honor-card">
+            <span class="honor-icon"></span>
+            <div class="honor-title editable" data-placeholder="荣誉名称">国际学术会议录用</div>
+            <div class="honor-desc editable" data-placeholder="荣誉描述">【數字與文化澳門 2026】第 12 届澳门国际传播周博士生论坛</div>
+          </div>
+          <div class="honor-card">
+            <span class="honor-icon"></span>
+            <div class="honor-title editable" data-placeholder="荣誉名称">优秀志愿服务</div>
+            <div class="honor-desc editable" data-placeholder="荣誉描述">累计志愿服务时长超 160 小时<br>第十届中国慈善会、社区主持等</div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- 图片预览模态框 -->
+  <div class="image-modal" id="imageModal">
+    <div class="image-modal-content">
+      <button class="image-modal-close" id="imageModalClose">×</button>
+      <img id="modalImage" src="" alt="顺丰产品介绍">
+    </div>
+  </div>
+
+  <!-- 编辑工具栏 -->
+  <div class="edit-toolbar">
+    <button class="edit-btn edit" id="toggleEdit" title="切换编辑模式">✏️</button>
+    <button class="edit-btn save" id="saveContent" title="保存内容" style="display:none;"></button>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // ================= 头像处理 =================
+      const avatarImg = document.getElementById('avatar-img');
+      const placeholder = document.getElementById('avatar-placeholder');
+      const avatarInput = document.getElementById('avatarInput');
+      
+      avatarInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            avatarImg.src = event.target.result;
+            avatarImg.style.display = 'block';
+            placeholder.style.display = 'none';
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      // ================= SPA 栏目切换 =================
+      const sidebarItems = document.querySelectorAll('.sidebar-item');
+      const sections = document.querySelectorAll('.page-section');
+      const sidebar = document.getElementById('sidebar');
+
+      function switchSection(targetId) {
+        sidebarItems.forEach(item => {
+          item.classList.toggle('active', item.dataset.target === targetId);
+        });
+        sections.forEach(sec => {
+          if (sec.id === targetId) {
+            sec.classList.add('active');
+          } else {
+            sec.classList.remove('active');
+          }
+        });
+        if (window.innerWidth <= 768) {
+          sidebar.classList.remove('open');
+        }
+      }
+
+      sidebarItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          switchSection(item.dataset.target);
+        });
+      });
+
+      // ================= 移动端菜单交互 =================
+      const menuToggle = document.getElementById('menuToggle');
+
+      menuToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('open');
+      });
+
+      document.addEventListener('click', (e) => {
+        if (window.innerWidth <= 768 && !sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+          sidebar.classList.remove('open');
+        }
+      });
+
+      window.addEventListener('resize', () => {
+        if (window.innerWidth > 768) {
+          sidebar.classList.remove('open');
+        }
+      });
+
+      // ================= 编辑模式 =================
+      const toggleEditBtn = document.getElementById('toggleEdit');
+      const saveBtn = document.getElementById('saveContent');
+      let isEditMode = false;
+
+      toggleEditBtn.addEventListener('click', () => {
+        isEditMode = !isEditMode;
+        document.body.classList.toggle('edit-mode', isEditMode);
+        toggleEditBtn.textContent = isEditMode ? '✅' : '✏️';
+        toggleEditBtn.title = isEditMode ? '退出编辑' : '进入编辑';
+        saveBtn.style.display = isEditMode ? 'flex' : 'none';
+        
+        document.querySelectorAll('.editable').forEach(el => {
+          el.contentEditable = isEditMode;
+        });
+      });
+
+      saveBtn.addEventListener('click', () => {
+        const content = {};
+        document.querySelectorAll('.editable').forEach((el, index) => {
+          content[`field_${index}`] = el.innerHTML;
+        });
+        console.log('保存的内容:', content);
+        alert('内容已保存！（实际应用中会发送到服务器）');
+      });
+
+      // ================= 作品链接管理 =================
+      const linkIcons = {
+        pdf: '📄',
+        image: '🖼️',
+        video: '🎬',
+        link: '🔗'
+      };
+
+      document.querySelectorAll('.card').forEach(card => {
+        const addForm = card.querySelector('.add-link-form');
+        const confirmBtn = card.querySelector('.confirm-add');
+        const linksContainer = card.querySelector('.links-container');
+        const linkType = card.querySelector('.link-type');
+        const linkName = card.querySelector('.link-name');
+        const linkUrl = card.querySelector('.link-url');
+
+        card.querySelector('.work-links-title').addEventListener('click', () => {
+          if (isEditMode) {
+            addForm.classList.toggle('show');
+          }
+        });
+
+        confirmBtn.addEventListener('click', () => {
+          const type = linkType.value;
+          const name = linkName.value.trim();
+          const url = linkUrl.value.trim();
+
+          if (!name || !url) {
+            alert('请填写完整的链接名称和地址');
+            return;
+          }
+
+          const linkItem = document.createElement('div');
+          linkItem.className = 'link-item';
+          linkItem.dataset.type = type;
+          linkItem.innerHTML = `
+            <span class="link-icon">${linkIcons[type]}</span>
+            <a href="${url}" class="link-text editable" data-placeholder="链接名称" contenteditable="${isEditMode}">${name}</a>
+            <span class="link-delete" title="删除">×</span>
+          `;
+
+          linksContainer.appendChild(linkItem);
+          linkName.value = '';
+          linkUrl.value = '';
+          addForm.classList.remove('show');
+        });
+
+        linksContainer.addEventListener('click', (e) => {
+          if (e.target.classList.contains('link-delete') && isEditMode) {
+            e.target.closest('.link-item').remove();
+          }
+        });
+      });
+
+      // ================= 顺丰产品介绍图片预览 =================
+      const sfProductLink = document.getElementById('sf-product-link');
+      const imageModal = document.getElementById('imageModal');
+      const modalImage = document.getElementById('modalImage');
+      const imageModalClose = document.getElementById('imageModalClose');
+
+      const sfProductImage = 'https://bailian-bmp-pre.oss-cn-hangzhou.aliyuncs.com/public/system_agent/PlaceHolder.png';
+
+      sfProductLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        modalImage.src = sfProductImage;
+        imageModal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+      });
+
+      imageModalClose.addEventListener('click', () => {
+        imageModal.classList.remove('show');
+        document.body.style.overflow = '';
+      });
+
+      imageModal.addEventListener('click', (e) => {
+        if (e.target === imageModal) {
+          imageModal.classList.remove('show');
+          document.body.style.overflow = '';
+        }
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && imageModal.classList.contains('show')) {
+          imageModal.classList.remove('show');
+          document.body.style.overflow = '';
+        }
+      });
+
+      document.querySelectorAll('.editable').forEach(el => {
+        el.contentEditable = false;
+      });
+    });
+  </script>
+</body>
+</html>
